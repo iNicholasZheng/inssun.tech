@@ -144,13 +144,13 @@ template {
 }
 @font-face {
   font-family: 'OPPOSans';
-  src: url("../fonts/lanting/OPPOSans/OPPOSans.woff2") format('woff2'), url("../fonts/lanting/OPPOSans/OPPOSans.woff") format('woff');
+  src: url("../fonts/lanting/OPPOSans.woff2") format('woff2'), url("../fonts/lanting/OPPOSans.woff") format('woff');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
 html {
-  font-family: OPPOSans, 'Microsoft Jhenghei', Lantinghei SC, 'lanting', PingFang SC, Seguo UI, Microsoft Yahei, Arial;
+  font-family: 'Microsoft Jhenghei', OPPOSans, Lantinghei SC, 'lanting', PingFang SC, Seguo UI, Microsoft Yahei, Arial;
 }
 html::-webkit-scrollbar {
   width: 8px;
