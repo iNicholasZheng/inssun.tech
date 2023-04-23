@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Matthew">
+
+
+    <meta name="subtitle" content="一个懂互联网的小道士！">
+
+
+
+
+<title>JavaScript 不可变的原始值和可变的对象引用 | Matthew&#39;s Blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Matthew&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Matthew&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">JavaScript 不可变的原始值和可变的对象引用</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Matthew</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">四月 23, 2023&nbsp;&nbsp;9:11:15</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/JavaScript/">JavaScript</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>JavaScript 中的原始值（<code>undefined</code>、<code>null</code>、布尔值、数字、字符串）与对象（包括数组和函数）有着根本的区别。原始值是不可更改的：任何方法都无法进行更改（或”突变“）一个原始值。对数字和布尔值来说显然如此——改变数字的值本身就说不通，而对字符串来说就不那么明显了，因为字符串看起来像是由字符组成的数组，我们期望可以通过指定索引来修改字符串中的字符。实际上，JavaScript 是禁止这样做的。字符串中的方法看上去返回了一个修改后的字符串，实际上返回的是一个新的字符串值。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> s = <span class="string">&quot;hello&quot;</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(s.<span class="title function_">toUpperCase</span>()); <span class="comment">// 返回“HELLO”，但并没有改变 s 的值</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(s); <span class="comment">// =&gt; “hello”：原始字符串的值并未改变</span></span><br></pre></td></tr></table></figure>
+
+<p>原始值的比较是值的比较：只有在它们的值相等时它们才相等。这对数字、布尔值、<code>null</code>和<code>undefined</code>来说有点难懂，并没有其他方法来比较它们。同样，对于字符串来说也并不明显：如果比较两个单独的字符串，仅在它们的长度相等且每个索引的字符都相等时，JavaScript 才认为它们相等。</p>
+<p>对象和原始值不同，首先，它们是可变的——它们的值也是可以修改的：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> o = &#123;</span><br><span class="line">    <span class="attr">x</span>: <span class="number">1</span></span><br><span class="line">&#125;;</span><br><span class="line">o.<span class="property">x</span> = <span class="number">2</span>; <span class="comment">// 通过修改对象属性值来更改对象</span></span><br><span class="line">o.<span class="property">y</span> = <span class="number">3</span>; <span class="comment">// 再次更改这个对象，给它增加一个新属性</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> a = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">a[<span class="number">0</span>] = <span class="number">0</span>; <span class="comment">// 更改数组的一个元素</span></span><br><span class="line">a[<span class="number">3</span>] = <span class="number">4</span>; <span class="comment">// 给数组增加一个元素</span></span><br></pre></td></tr></table></figure>
+
+<p>对象的比较并非值的比较：即使两个对象包含同样的属性即相同的值，它们也是不相等的。各个索引元素完全相等的两个数组也不相等。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> o = &#123;</span><br><span class="line">    <span class="attr">x</span>: <span class="number">1</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> p = &#123;</span><br><span class="line">    <span class="attr">x</span>: <span class="number">1</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(o === p); <span class="comment">// =&gt; false：两个单独的对象永不相等</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> a = [], b = [];</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(a === b); <span class="comment">// =&gt; false：两个单独的数组永不相等</span></span><br></pre></td></tr></table></figure>
+
+<p>我们通常将对象称之为引用类型，以此来和 JavaScript 的基本类型区分开来。依照术语的叫法，对象值都是引用，对象的比较均是引用的比较：仅在它们引用同一个基对象时，它们才相等。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = [];</span><br><span class="line"><span class="keyword">let</span> b = a;</span><br><span class="line">b[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(a[<span class="number">0</span>]);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(a === b); <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<p>如上述代码所示，将对象（或数组）赋值给一个变量，仅仅是赋值的引用值：对象本身没有复制一次。如果你想要得到一个对象或数组的副本，则必须显式复制对象的每个属性或数组的每一个元素。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = [<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>]; <span class="comment">// 待复制的数组</span></span><br><span class="line"><span class="keyword">let</span> b = []; <span class="comment">// 复制到的目标空数组</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; a.<span class="property">length</span>; i++) &#123; <span class="comment">// 遍历 a[] 中的每个元素</span></span><br><span class="line">    b[i] = a[i]; <span class="comment">// 将元素值复制到 b 中</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>同样，如果我们想要比较两个单独的对象或者数组，则必须要比较它们的属性或元素。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">f</span>(<span class="params">a, b</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (a.<span class="property">length</span> != b.<span class="property">length</span>) <span class="keyword">return</span> <span class="literal">false</span>; <span class="comment">// 两个长度不同的数组不相等</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; a.<span class="property">length</span>; i++) <span class="comment">// 循环遍历所有元素</span></span><br><span class="line">        <span class="keyword">if</span> (a[i] !== b[i]) <span class="keyword">return</span> <span class="literal">false</span>; <span class="comment">// 如果有任意元素不相等，则数组不相等</span></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>; <span class="comment">// 否则它们相等</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/JavaScript/"># JavaScript</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/20230408/2023040801.html">JavaScript 基本数据类型综述</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>Copyright © 2020-2023 Matthew. All Rights Reserved</span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

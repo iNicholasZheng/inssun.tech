@@ -15,7 +15,7 @@
 
 
 
-<title>解决 MySQL 8.x 登录报错 | Matthew&#39;s Blog</title>
+<title>JavaScript 中 undefined 和 null 两种类型的区别 | Matthew&#39;s Blog</title>
 
 
 
@@ -198,7 +198,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">解决 MySQL 8.x 登录报错</h1>
+            <h1 class="post-title">JavaScript 中 undefined 和 null 两种类型的区别</h1>
             
                 <div class="post-meta">
                     
@@ -207,14 +207,14 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">十二月 17, 2020&nbsp;&nbsp;21:27:59</a>
+                        Date: <a href="#">四月 3, 2023&nbsp;&nbsp;21:01:06</a>
                         </span>
                     
                     
                         <span class="post-category">
                     Category:
                             
-                                <a href="/categories/MySQL/">MySQL</a>
+                                <a href="/categories/JavaScript/">JavaScript</a>
                             
                         </span>
                     
@@ -223,32 +223,38 @@
         </header>
 
         <div class="post-content">
-            <p>此方法可解决以下两种报错：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ERROR 1045 (28000): Access denied for user &#x27;root&#x27;@&#x27;localhost&#x27; (using password: YES)</span><br></pre></td></tr></table></figure>
+            <p>undefined 和 null 虽然是两种不同的基本数据类型，存在一些不同的特征，但在某些表现上却存在着相同之处，所以在这里主要来为大家讲解一下 undefined 和 null 在 JavaScript 中的相同点与不同点。</p>
+<h2 id="相同点"><a href="#相同点" class="headerlink" title="相同点"></a>相同点</h2><ul>
+<li>undefined 和 null 两种数据类型都只有一个字面值，分别是<code>undefined</code>和<code>null</code>；</li>
+<li>undefined 类型和 null 类型在转换为 Boolean 类型的值时，都会转为<code>false</code>。所以若是通过非运算符（<code>!</code>）获取结果为<code>true</code>的变量时，无法判断其值为<code>undefined</code>还是<code>null</code>；</li>
+<li>在需要将两者转换成对象时，将会抛出<code>TypeError</code>异常，这也是平时最为常见的引用异常，如下述代码所示：</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a;</span><br><span class="line"><span class="keyword">let</span> b = <span class="literal">null</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(a.<span class="property">name</span>); <span class="comment">// Uncaught TypeError: Cannot read property &#x27;name&#x27; of undefined</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(b.<span class="property">name</span>); <span class="comment">// Uncaught TypeError: Cannot read property &#x27;name&#x27; of null</span></span><br></pre></td></tr></table></figure>
 
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ERROR 1045 (28000): Access denied for user &#x27;root&#x27;@&#x27;localhost&#x27; (using password: NO)</span><br></pre></td></tr></table></figure>
+<p>上述代码表示在通过某个变量引用<code>name</code>属性时，若是该变量值实际为<code>undefined</code>或者<code>null</code>，就会抛出异常。</p>
+<ul>
+<li>undefined 类型派生自 null 类型，所以在非严格相等的情况下，两者是相等的，如下述代码所示：</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">null</span> == <span class="literal">undefined</span> <span class="comment">//true</span></span><br></pre></td></tr></table></figure>
 
-<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p>1、进入 MySQL 安装目录，修改 MySQL 配置文件，在<code>[mysqld]</code>下添加<code>skip-grant-tables</code>，保存即可；</p>
-<p>2、使用管理员身份打开命令行，输入如下命令，重启 MySQL；</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net stop mysql</span><br></pre></td></tr></table></figure>
+<ul>
+<li>在需要进行字符串类型转换时，null 会转换为字符串的<code>null</code>，undefined 也会转换为字符串的<code>undefined</code>。</li>
+</ul>
+<h2 id="不同点"><a href="#不同点" class="headerlink" title="不同点"></a>不同点</h2><ul>
+<li><code>null</code>是 JavaScript 中的关键词，而<code>undefined</code>是 JavaScript 中的一个全局变量，即挂载在<code>window</code>上的一个变量，并不是关键词；</li>
+<li>在使用<code>TypeOf</code>运算符检测时，undefined 类型的值会返回<code>undefined</code>，而 null 类型的值则会返回<code>object</code>；</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typeof</span> <span class="literal">undefined</span>; <span class="comment">// undefined</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="literal">null</span>; <span class="comment">// object</span></span><br></pre></td></tr></table></figure>
 
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net start mysql</span><br></pre></td></tr></table></figure>
+<ul>
+<li>在通过<code>call</code>调用<code>toString</code>函数时，undefined 会返回<code>[object Undefined]</code>，而 null 类型的值则会返回<code>[object    Null]</code>；</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Object</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">toString</span>.<span class="title function_">call</span>(<span class="literal">undefined</span>); <span class="comment">// [object Undefined]</span></span><br><span class="line"><span class="title class_">Object</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">toString</span>.<span class="title function_">call</span>(<span class="literal">null</span>); <span class="comment">// [object Null]</span></span><br></pre></td></tr></table></figure>
 
-<p>3、重启后，输入<code>mysql -u root -p</code>进行登录，在要求输入 MySQL 密码时，无需输入密码，直接按回车键；</p>
-<p>4、输入如下命令，修改 MySQL 密码；</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER USER &#x27;root&#x27;@&#x27;localhost&#x27; IDENTIFIED BY &#x27;new password&#x27; PASSWORD EXPIRE NEVER;</span><br></pre></td></tr></table></figure>
-
-<p>5、修改 MySQL 密码后，输入如下命令更新权限；</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
-
-<p>6、进入 MySQL 安装目录，修改 MySQL 配置文件，在<code>[mysqld]</code>下删除<code>skip-grant-tables</code>，并保存。</p>
-<p>7、使用管理员身份打开命令行，输入如下命令，重启 MySQL。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net stop mysql</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net start mysql</span><br></pre></td></tr></table></figure>
-
-<p>8、重新启动后，即可正常登录。</p>
-<p>注：此方法也可解决宝塔面板，数据库同步时的密码错误问题。</p>
+<ul>
+<li>在 undefined 或 NaN 参与计算时，undefined 会被转换为<code>NaN</code>，无法参与计算，而 null 会被转换为<code>0</code>，可以参与计算。</li>
+</ul>
+<h2 id="温馨提示"><a href="#温馨提示" class="headerlink" title="温馨提示"></a>温馨提示</h2><p>无论在任何情况下，都不建议将一个变量设置为<code>undefined</code>。如果需要定义某个变量来保存将来要使用的对象，建议将其初始化为<code>null</code>。这样的话不仅可以将<code>null</code>作为空对象指针的惯例，还有助于区分<code>null</code>和<code>undefined</code>。</p>
 
         </div>
 
@@ -267,9 +273,13 @@
                 <span class="tag">
                     
                     
-                        <a href="/tags/MySQL/"># MySQL</a>
+                        <a href="/tags/JavaScript/"># JavaScript</a>
                     
-                        <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"># 数据库</a>
+                        <a href="/tags/undefined/"># undefined</a>
+                    
+                        <a href="/tags/null/"># null</a>
+                    
+                        <a href="/tags/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/"># 数据类型</a>
                     
                         
                 </span>
@@ -282,8 +292,10 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/20230403/2023040301/">JavaScript 中 undefined 和 null 两种类型的区别</a>
+                <a class="prev" rel="prev" href="/20230405/2023040501.html">JavaScript 中 var 和 let 声明的区别</a>
             
+            
+            <a class="next" rel="next" href="/20201217/2020121701.html">解决 MySQL 8.x 登录报错</a>
             
         </section>
 

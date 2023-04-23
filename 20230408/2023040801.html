@@ -15,7 +15,7 @@
 
 
 
-<title>JavaScript 中 var 和 let 声明的区别 | Matthew&#39;s Blog</title>
+<title>JavaScript 基本数据类型综述 | Matthew&#39;s Blog</title>
 
 
 
@@ -133,7 +133,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">JavaScript 中 var 和 let 声明的区别</h1>
+            <h1 class="post-title">JavaScript 基本数据类型综述</h1>
             
                 <div class="post-meta">
                     
@@ -142,7 +142,7 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">四月 5, 2023&nbsp;&nbsp;21:41:23</a>
+                        Date: <a href="#">四月 8, 2023&nbsp;&nbsp;11:27:49</a>
                         </span>
                     
                     
@@ -158,10 +158,16 @@
         </header>
 
         <div class="post-content">
-            <p>使用<code>var</code>声明的变量，不具有块级作用域。这种变量的作用域仅限于包含函数的函数体，无论它们在函数中嵌套的层次有多深；</p>
-<p>如果在函数体外部使用<code>var</code>，则会声明一个全局变量。但通过<code>var</code>声明的全局变量与通过<code>let</code>声明的全局变量有一个重要区别。通过<code>var</code>声明的全局变量被实现为全局对象的属性。全局对象可以通过<code>globalThis</code>引用。因此，如果你在函数外部写了<code>var x = 2;</code>就相当于写了<code>globalThis.x = 2;</code>。不过要注意，这么类比并不完全恰当。因为通过全局<code>var</code>创建的这个属性不能使用<code>delete</code>操作符删除。通过<code>let</code>和<code>const</code>声明的全局变量和常量不是全局对象的属性；</p>
-<p>与通过<code>let</code>声明的变量不同，使用<code>var</code>多次声明同名变量是合法的。而且由于<code>var</code>变量具有函数作用域而不是块作用域，这种重新声明实际上是很常见的。变量<code>i</code>经常用于保存整数值，特别是经常用作<code>for</code>循环的索引变量。在有多个<code>for</code>循环的函数中，每个循环通常都以<code>for(var i = 0; ...</code>开头。因为<code>var</code>并不会把这些变量的作用域限定在循环体内，每次循环都会（无害地）重新声明和重新初始化同一个变量；</p>
-<p><code>var</code>声明的一个最不同寻常的特征是作用域提升。在使用<code>var</code>声明变量时，该声明会被提高（或提升）到包含函数的顶部。但变量的初始化仍然在代码所在位置，只有变量的定义转移到了函数顶部。因此对使用<code>var</code>声明的变量，可以在包含函数内部的任何地方使用而不会报错。如果初始化代码尚未运行，则变量的值可能是<code>undefined</code>，但在初始化之前是可以使用变量并且不会报错。但是在<code>let</code>中，如果试图在<code>let</code>语句运行前使用该变量则会导致错误，而不是得到<code>undefined</code>值。</p>
+            <ul>
+<li>在 JavaScript 中有五大基本数据类型，分别是：数字、字符串、布尔值、<code>undefined</code>、<code>null</code>；</li>
+<li>任何不属于基本类型的东西都属于对象；</li>
+<li>数字类型可以存储的数据包括：正负整数、浮点数、十六进制数、八进制数、二进制数、指数以及特殊数值 <code>NaN</code>、<code>Infinity</code>、<code>-Infinity</code>；</li>
+<li>字符串类型存储是一对引号之间的所有字符；</li>
+<li>布尔类型的值只有两个，分别是 <code>true</code> 和 <code>false</code>；</li>
+<li><code>null</code> 类型的值只有一个 <code>null</code>；</li>
+<li><code>undefined</code> 类型的值也只有一个 <code>undefined</code>；</li>
+<li>绝大部分值再转换为布尔类型时都为 <code>true</code>，但是 6 种 <code>falsy</code> 值除外，分别是：<code>&quot;&quot;</code>、<code>null</code>、<code>undefined</code>、<code>0</code>、<code>NaN</code>、<code>false</code>。</li>
+</ul>
 
         </div>
 
@@ -182,6 +188,8 @@
                     
                         <a href="/tags/JavaScript/"># JavaScript</a>
                     
+                        <a href="/tags/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/"># 数据类型</a>
+                    
                         
                 </span>
             </div>
@@ -193,10 +201,10 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/20230408/2023040801/">JavaScript 基本数据类型综述</a>
+                <a class="prev" rel="prev" href="/20230423/2023042301.html">JavaScript 不可变的原始值和可变的对象引用</a>
             
             
-            <a class="next" rel="next" href="/20230403/2023040301/">JavaScript 中 undefined 和 null 两种类型的区别</a>
+            <a class="next" rel="next" href="/20230405/2023040501.html">JavaScript 中 var 和 let 声明的区别</a>
             
         </section>
 
