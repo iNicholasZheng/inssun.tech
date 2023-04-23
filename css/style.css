@@ -143,29 +143,8 @@ template {
   display: none;
 }
 @font-face {
-  font-family: 'OPPOSans';
-  src: url("../fonts/lanting/OPPOSans.woff2") format('woff2'), url("../fonts/lanting/OPPOSans.woff") format('woff');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
   font-family: 'JetBrainsMono-Regular';
   src: url("../fonts/lanting/JetBrainsMono-Regular.woff2") format('woff2');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'HarmonyOS';
-  src: url("../fonts/lanting/HarmonyOS_Sans.woff2") format('woff2'), url("../fonts/lanting/HarmonyOS_Sans.woff") format('woff');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'HarmonyOS-CN';
-  src: url("../fonts/lanting/HarmonyOS_Sans_SC.woff2") format('woff2'), url("../fonts/lanting/HarmonyOS_Sans_SC.woff") format('woff');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -178,7 +157,7 @@ template {
   font-display: swap;
 }
 html {
-  font-family: MiSans, HarmonyOS-CN, HarmonyOS, OPPOSans, 'Microsoft Jhenghei', Lantinghei SC, 'lanting', PingFang SC, Seguo UI, Microsoft Yahei, Arial;
+  font-family: MiSans, 'Microsoft Jhenghei', PingFang SC, Seguo UI, Microsoft Yahei, Arial;
 }
 html::-webkit-scrollbar {
   width: 8px;
