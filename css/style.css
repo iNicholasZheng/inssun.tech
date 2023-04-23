@@ -170,8 +170,15 @@ template {
   font-style: normal;
   font-display: swap;
 }
+@font-face {
+  font-family: 'MiSans';
+  src: url("../fonts/lanting/MiSans-Regular.woff2") format('woff2'), url("../fonts/lanting/MiSans-Regular.woff") format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 html {
-  font-family: HarmonyOS-CN, HarmonyOS, OPPOSans, 'Microsoft Jhenghei', Lantinghei SC, 'lanting', PingFang SC, Seguo UI, Microsoft Yahei, Arial;
+  font-family: MiSans, HarmonyOS-CN, HarmonyOS, OPPOSans, 'Microsoft Jhenghei', Lantinghei SC, 'lanting', PingFang SC, Seguo UI, Microsoft Yahei, Arial;
 }
 html::-webkit-scrollbar {
   width: 8px;
@@ -837,7 +844,7 @@ header label {
 .post-content pre {
   padding: 7px;
   font-size: 13px;
-  font-family: JetBrainsMono-Regular, OPPOSans, Consolas, Monaco, Menlo, Consolas, monospace;
+  font-family: JetBrainsMono-Regular, MiSans, HarmonyOS-CN, HarmonyOS, OPPOSans, Consolas, Monaco, Menlo, Consolas, monospace;
 }
 .post-content code {
   padding: 3px 5px;
@@ -994,7 +1001,7 @@ header label {
   line-height: 1.7em;
   padding: 7px;
   font-size: 13px;
-  font-family: JetBrainsMono-Regular, OPPOSans, Consolas, Monaco, Menlo, Consolas, monospace;
+  font-family: JetBrainsMono-Regular, MiSans, HarmonyOS-CN, HarmonyOS, OPPOSans, Consolas, Monaco, Menlo, Consolas, monospace;
 }
 .post-content code {
   line-height: 1.7em;
@@ -1323,14 +1330,14 @@ header label {
 .post-content code {
   padding: 2px 4px;
   background: #f7f7f7;
-  font-family: JetBrainsMono-Regular, OPPOSans, Menlo, Monaco, Consolas, Courier New, monospace;
+  font-family: JetBrainsMono-Regular, MiSans, HarmonyOS-CN, HarmonyOS, OPPOSans, Menlo, Monaco, Consolas, Courier New, monospace;
   font-size: 12px;
 }
 .post-content pre {
   padding: 10px;
   overflow: auto;
   background: #f7f7f7;
-  font-family: JetBrainsMono-Regular, OPPOSans, Menlo, Monaco, Consolas, Courier New, monospace;
+  font-family: JetBrainsMono-Regular, MiSans, HarmonyOS-CN, HarmonyOS, OPPOSans, Menlo, Monaco, Consolas, Courier New, monospace;
 }
 .post-content pre code {
   padding: 0;
