@@ -12,3 +12,17 @@
   font-style: normal;
   font-display: swap;
 }
+@font-face {
+  font-family: 'HarmonyOS';
+  src: url("../fonts/lanting/HarmonyOS_Sans.woff2") format('woff2'), url("../fonts/lanting/HarmonyOS_Sans.woff") format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'HarmonyOS-CN';
+  src: url("../fonts/lanting/HarmonyOS_Sans_SC.woff2") format('woff2'), url("../fonts/lanting/HarmonyOS_Sans_SC.woff") format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
