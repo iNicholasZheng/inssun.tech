@@ -15,7 +15,7 @@
 
 
 
-<title>正则表达式模糊匹配方法重点详解 | Matthew&#39;s Blog</title>
+<title>正则表达式字符组重点详解 | Matthew&#39;s Blog</title>
 
 
 
@@ -237,7 +237,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">正则表达式模糊匹配方法重点详解</h1>
+            <h1 class="post-title">正则表达式字符组重点详解</h1>
             
                 <div class="post-meta">
                     
@@ -246,7 +246,7 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">四月 23, 2023&nbsp;&nbsp;16:02:18</a>
+                        Date: <a href="#">四月 23, 2023&nbsp;&nbsp;20:57:40</a>
                         </span>
                     
                     
@@ -262,20 +262,15 @@
         </header>
 
         <div class="post-content">
-            <p>如果正则表达式只能做到精确匹配，那么正则表达式也就没必要存在了，比如说<code>/Hello/</code>只能匹配<code>&quot;Hello&quot;</code>这个子串，譬如下述代码所示。正则之所以强大，是因为其能实现模糊匹配。而模糊匹配则可以分为横向模糊与纵向模糊。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> regex = <span class="regexp">/hello/</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(regex.<span class="title function_">test</span>(<span class="string">&quot;Hello&quot;</span>)); <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+            <p>在字符组这里，我们需要强调的是，虽然叫字符组（字符类），但只是其中的一个字符。例如<code>[abc]</code>，表示匹配一个字符，它可以是<code>&quot;a&quot;</code>、<code>&quot;b&quot;</code>、<code>&quot;c&quot;</code>之一。</p>
+<h2 id="范围表示法"><a href="#范围表示法" class="headerlink" title="范围表示法"></a>范围表示法</h2><p>如果字符组里的字符特别多，我们可以使用范围表示法。比如<code>[123456abcdefGHIJKLM]</code>，就可以写成<code>1-6a-fG-M</code>。用连字符<code>-</code>来省略和简写。</p>
+<p>因为连字符有特殊用途，若要匹配<code>&quot;a&quot;</code>、<code>&quot;-&quot;</code>、<code>&quot;z&quot;</code>这三者中的任意一个字符就可以写成：<code>[-az]</code>或<code>[az-]</code>亦或是<code>[a\-z]</code>。其实很简单，就是当我们匹配<code>-</code>时，要么将其放在开头或者结尾，要么就进行转义，否则引擎就会将其解析为范围表示法。</p>
+<h2 id="排除字符组"><a href="#排除字符组" class="headerlink" title="排除字符组"></a>排除字符组</h2><p>纵向模糊匹配，还有一种情形就是，某位字符可以是任何东西，但就是不能是<code>&quot;a&quot;</code>、<code>&quot;b&quot;</code>、<code>&quot;c&quot;</code>。此时就是排除字符组（反义字符组）的概念。例如<code>[^abc]</code>，表示的就是除了<code>&quot;a&quot;</code>、<code>&quot;b&quot;</code>、<code>&quot;c&quot;</code>之外的任意一个字符。字符组的第一位放<code>^</code><br>（脱字符），表示求反的概念。当然，也有相应的范围表示法。</p>
+<h2 id="常见的简介形式"><a href="#常见的简介形式" class="headerlink" title="常见的简介形式"></a>常见的简介形式</h2><p>有了字符串的概念后，一些常见的符号我们也就理解了。因为它们都是系统自带的简写形式。</p>
+<img src="/images/20230423/202304230103.svg" width="100%">
 
-<h2 id="横向模糊匹配"><a href="#横向模糊匹配" class="headerlink" title="横向模糊匹配"></a>横向模糊匹配</h2><p>横向模糊指的是，一个正则可匹配的字符串的长度不是固定的，可以是多种情况的。其实现的方法是使用两次，譬如<code>m,n</code>，表示连续出现最少 $m$ 次，最多 $n$ 次。</p>
-<p>比如正则<code>/ab&#123;2,5&#125;c/</code>表示匹配这样一个字符串：第一个字符是<code>&quot;a&quot;</code>，接下来是 $2$ 到 $5$ 个字符到<code>&quot;b&quot;</code>，最后一个字符是<code>&quot;c&quot;</code>，其可视化形式如下：</p>
-<img src="/images/20230423/202304230101.svg" width="30%">
-
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> regex = <span class="regexp">/ab&#123;2,5&#125;c/g</span>;</span><br><span class="line"><span class="keyword">let</span> string = <span class="string">&quot;abc abbc abbbc abbbbc abbbbbc abbbbbbc&quot;</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(string.<span class="title function_">match</span>(regex)); <span class="comment">// [&quot;abbc&quot;, &quot;abbbc&quot;, &quot;abbbbc&quot;, &quot;abbbbbc&quot;]</span></span><br></pre></td></tr></table></figure>
-
-<p>在上述代码示例中，使用的正则是<code>ab&#123;2,5&#125;c/g</code>，其中<code>g</code>是正则的一个修饰符。表示全局匹配，即在目标字符串中按照顺序找到满足匹配模式的所有子串，强调的是“所有”，而不只是“第一个”。<code>g</code>是单词<code>global</code>的首字母。</p>
-<h2 id="纵向模糊匹配"><a href="#纵向模糊匹配" class="headerlink" title="纵向模糊匹配"></a>纵向模糊匹配</h2><p>纵向模糊指的是，一个正则匹配的字符串，具体到某一位字符时，它可以不是某个确定的字符，可以有多种可能。其实现的方式是使用字符组。譬如<code>[abc]</code>，表示该字符可以是<code>&quot;a&quot;</code>、<code>&quot;b&quot;</code>、<code>&quot;c&quot;</code>中的任意一个。比如<code>/a[123]b/</code>可以匹配如下三种字符串：<code>&quot;a1b&quot;</code>、<code>&quot;a2b&quot;</code>、<code>&quot;a3b&quot;</code>。其可视化形式如下：</p>
-<img src="/images/20230423/202304230102.svg" width="30%">
-
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> regex = <span class="regexp">/a[123]bg/</span>;</span><br><span class="line"><span class="keyword">let</span> string = <span class="string">&quot;a0b a1b a2b a3b a4b&quot;</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(string.<span class="title function_">match</span>(regex)); <span class="comment">// [&quot;a1b&quot;, &quot;a2b&quot;, &quot;a3b&quot;]</span></span><br></pre></td></tr></table></figure>
+<p>如果要匹配任意字符，可以使用<code>[\d\D]</code>、<code>[\w\W]</code>、<code>[\s\S]</code>和<code>[^]</code>中任何的一个。以上各字符串组对应的可视化形式如下：</p>
+<img src="/images/20230423/202304230104.svg" width="80%">
         </div>
 
         
@@ -306,10 +301,8 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/20230423/2023042303.html">JavaScript 实现数组去重的方法</a>
             
-            
-            <a class="next" rel="next" href="/20230423/2023042301.html">JavaScript 不可变的原始值和可变的对象引用</a>
+            <a class="next" rel="next" href="/20230423/2023042303.html">JavaScript 实现数组去重的方法</a>
             
         </section>
 
