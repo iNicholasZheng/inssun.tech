@@ -631,6 +631,8 @@ header label {
 }
 .post-wrap .archive-item {
   margin-left: 2rem;
+  height: 30px;
+  line-height: 30px;
 }
 .archive-item-link {
   display: inline-block;
@@ -659,6 +661,14 @@ header label {
 }
 .dark-theme .archive-item-date {
   color: #87878d;
+}
+.archive-item-link-categories {
+  display: inline-block;
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  white-space: nowrap;
 }
 .post-wrap .categories-card {
   margin: 0 auto;
@@ -1210,7 +1220,7 @@ header label {
   .navbar-mobile .container .menu {
     text-align: center;
     background: #fff;
-    border-top: 1px solid #000;
+    border-top: 1px solid #e8e8e8;
     padding-top: 1em;
     padding-bottom: 1em;
     display: none;
