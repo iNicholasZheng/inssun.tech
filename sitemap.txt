@@ -16,6 +16,7 @@ http://inssun.tech/tags/undefined/
 http://inssun.tech/tags/null/
 http://inssun.tech/tags/%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/
 http://inssun.tech/tags/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/
+http://inssun.tech/tags/%E6%95%B0%E7%BB%84/
 http://inssun.tech/categories/MySQL/
 http://inssun.tech/categories/JavaScript/
 http://inssun.tech/categories/JavaScript/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/
