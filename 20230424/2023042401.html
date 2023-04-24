@@ -15,7 +15,7 @@
 
 
 
-<title>正则表达式字符组重点详解 | Matthew&#39;s Blog</title>
+<title>JavaScript 排序算法 | Matthew&#39;s Blog</title>
 
 
 
@@ -42,6 +42,45 @@
 
     
     
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
         
     
 
@@ -198,7 +237,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">正则表达式字符组重点详解</h1>
+            <h1 class="post-title">JavaScript 排序算法</h1>
             
                 <div class="post-meta">
                     
@@ -207,14 +246,14 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">四月 23, 2023&nbsp;&nbsp;20:57:40</a>
+                        Date: <a href="#">四月 24, 2023&nbsp;&nbsp;14:01:18</a>
                         </span>
                     
                     
                         <span class="post-category">
                     Category:
                             
-                                <a href="/categories/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">正则表达式</a>
+                                <a href="/categories/JavaScript/">JavaScript</a>
                             
                         </span>
                     
@@ -223,15 +262,18 @@
         </header>
 
         <div class="post-content">
-            <p>在字符组这里，我们需要强调的是，虽然叫字符组（字符类），但只是其中的一个字符。例如<code>[abc]</code>，表示匹配一个字符，它可以是<code>&quot;a&quot;</code>、<code>&quot;b&quot;</code>、<code>&quot;c&quot;</code>之一。</p>
-<h2 id="范围表示法"><a href="#范围表示法" class="headerlink" title="范围表示法"></a>范围表示法</h2><p>如果字符组里的字符特别多，我们可以使用范围表示法。比如<code>[123456abcdefGHIJKLM]</code>，就可以写成<code>1-6a-fG-M</code>。用连字符<code>-</code>来省略和简写。</p>
-<p>因为连字符有特殊用途，若要匹配<code>&quot;a&quot;</code>、<code>&quot;-&quot;</code>、<code>&quot;z&quot;</code>这三者中的任意一个字符就可以写成：<code>[-az]</code>或<code>[az-]</code>亦或是<code>[a\-z]</code>。其实很简单，就是当我们匹配<code>-</code>时，要么将其放在开头或者结尾，要么就进行转义，否则引擎就会将其解析为范围表示法。</p>
-<h2 id="排除字符组"><a href="#排除字符组" class="headerlink" title="排除字符组"></a>排除字符组</h2><p>纵向模糊匹配，还有一种情形就是，某位字符可以是任何东西，但就是不能是<code>&quot;a&quot;</code>、<code>&quot;b&quot;</code>、<code>&quot;c&quot;</code>。此时就是排除字符组（反义字符组）的概念。例如<code>[^abc]</code>，表示的就是除了<code>&quot;a&quot;</code>、<code>&quot;b&quot;</code>、<code>&quot;c&quot;</code>之外的任意一个字符。字符组的第一位放<code>^</code><br>（脱字符），表示求反的概念。当然，也有相应的范围表示法。</p>
-<h2 id="常见的简介形式"><a href="#常见的简介形式" class="headerlink" title="常见的简介形式"></a>常见的简介形式</h2><p>有了字符串的概念后，一些常见的符号我们也就理解了。因为它们都是系统自带的简写形式。</p>
-<img src="/images/20230423/202304230401.svg">
+            <h2 id="冒泡排序算法"><a href="#冒泡排序算法" class="headerlink" title="冒泡排序算法"></a>冒泡排序算法</h2><p>冒泡排序是一种简单的排序算法，它的核心思想是将相邻的两个元素逐一比较，如果顺序不对就交换位置，直至整个序列变得有序。下面是冒泡排序的具体操作步骤：</p>
+<ol>
+<li>比较相邻的两个元素。如果第一个元素比第二个元素大，就交换这两个元素；</li>
+<li>对每一对相邻元素做同样的工作，从开始的第一对到结尾的最后一对；</li>
+<li>针对所有的元素重复上述步骤，除了最后一个；</li>
+<li>重复步骤 1~3，直至排序完成。</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">bubbleSort</span>(<span class="params">arr</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> len = arr.<span class="property">length</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; len - <span class="number">1</span>; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">0</span>; j &lt; len - i - <span class="number">1</span>; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (arr[j] &gt; arr[j + <span class="number">1</span>]) &#123;</span><br><span class="line">                <span class="comment">// 交换相邻的两个元素</span></span><br><span class="line">                <span class="keyword">let</span> temp = arr[j];</span><br><span class="line">                arr[j] = arr[j + <span class="number">1</span>];</span><br><span class="line">                arr[j + <span class="number">1</span>] = temp;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> arr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>如果要匹配任意字符，可以使用<code>[\d\D]</code>、<code>[\w\W]</code>、<code>[\s\S]</code>和<code>[^]</code>中任何的一个。以上各字符串组对应的可视化形式如下：</p>
-<img src="/images/20230423/202304230402.webp">
+<p>在上述代码中，我们使用了两个<code>for</code>循环来实现冒泡排序。外层循环控制排序的轮数，内层循环用于比较相邻元素并交换它们的位置。每一轮排序结束后，数组中最大的元素都会被放到数组的末尾，因此下一轮排序中就不再考虑该元素。</p>
+<p>需要注意的是，在最坏情况下，即待排序序列为逆序排列时，冒泡排序的时间复杂度为 O($n^2$)。但是，在实际应用中，由于它的实现简单，对于小规模数据的排序仍然是一个较为不错的选择。</p>
+
         </div>
 
         
@@ -249,7 +291,11 @@
                 <span class="tag">
                     
                     
-                        <a href="/tags/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/"># 正则表达式</a>
+                        <a href="/tags/JavaScript/"># JavaScript</a>
+                    
+                        <a href="/tags/%E7%AE%97%E6%B3%95/"># 算法</a>
+                    
+                        <a href="/tags/%E7%BB%8F%E5%85%B8%E9%9D%A2%E8%AF%95%E9%A2%98/"># 经典面试题</a>
                     
                         
                 </span>
@@ -262,10 +308,8 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/20230424/2023042401.html">JavaScript 排序算法</a>
             
-            
-            <a class="next" rel="next" href="/20230423/2023042303.html">JavaScript 实现数组去重的方法</a>
+            <a class="next" rel="next" href="/20230423/2023042304.html">正则表达式字符组重点详解</a>
             
         </section>
 
