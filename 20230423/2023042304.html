@@ -43,45 +43,6 @@
     
     
         
-            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-    "HTML-CSS": {
-        preferredFont: "TeX",
-        availableFonts: ["STIX","TeX"],
-        linebreaks: { automatic:true },
-        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
-    },
-    tex2jax: {
-        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
-        processEscapes: true,
-        ignoreClass: "tex2jax_ignore|dno",
-        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-    },
-    TeX: {
-        equationNumbers: { autoNumber: "AMS" },
-        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
-        Macros: { href: "{}" }
-    },
-    messageStyle: "none"
-    });
-</script>
-<!-- 给MathJax元素添加has-jax class -->
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i=0; i < all.length; i += 1) {
-            all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-    });
-</script>
-<!-- 通过连接CDN加载MathJax的js代码 -->
-<script type="text/javascript" async
-        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-
-
-        
     
 
 
@@ -267,10 +228,10 @@
 <p>因为连字符有特殊用途，若要匹配<code>&quot;a&quot;</code>、<code>&quot;-&quot;</code>、<code>&quot;z&quot;</code>这三者中的任意一个字符就可以写成：<code>[-az]</code>或<code>[az-]</code>亦或是<code>[a\-z]</code>。其实很简单，就是当我们匹配<code>-</code>时，要么将其放在开头或者结尾，要么就进行转义，否则引擎就会将其解析为范围表示法。</p>
 <h2 id="排除字符组"><a href="#排除字符组" class="headerlink" title="排除字符组"></a>排除字符组</h2><p>纵向模糊匹配，还有一种情形就是，某位字符可以是任何东西，但就是不能是<code>&quot;a&quot;</code>、<code>&quot;b&quot;</code>、<code>&quot;c&quot;</code>。此时就是排除字符组（反义字符组）的概念。例如<code>[^abc]</code>，表示的就是除了<code>&quot;a&quot;</code>、<code>&quot;b&quot;</code>、<code>&quot;c&quot;</code>之外的任意一个字符。字符组的第一位放<code>^</code><br>（脱字符），表示求反的概念。当然，也有相应的范围表示法。</p>
 <h2 id="常见的简介形式"><a href="#常见的简介形式" class="headerlink" title="常见的简介形式"></a>常见的简介形式</h2><p>有了字符串的概念后，一些常见的符号我们也就理解了。因为它们都是系统自带的简写形式。</p>
-<img src="/images/20230423/202304230103.svg" width="100%">
+<img src="/images/20230423/202304230401.svg">
 
 <p>如果要匹配任意字符，可以使用<code>[\d\D]</code>、<code>[\w\W]</code>、<code>[\s\S]</code>和<code>[^]</code>中任何的一个。以上各字符串组对应的可视化形式如下：</p>
-<img src="/images/20230423/202304230104.svg" width="80%">
+<img src="/images/20230423/202304230402.webp">
         </div>
 
         
