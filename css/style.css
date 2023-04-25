@@ -258,7 +258,7 @@ a:hover {
   height: 4rem;
   width: 100%;
   text-align: center;
-  line-height: 4rem;
+  line-height: 2rem;
 }
 @charset "utf-8";
 
@@ -500,6 +500,11 @@ header label {
 }
 .copyright {
   font-size: 14px;
+}
+.copyright >div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .pagination {
   display: flex;
