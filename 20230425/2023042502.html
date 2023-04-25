@@ -167,6 +167,71 @@
                 <div class="container">
     
     
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
 
     
     <article class="post-wrap">
@@ -206,7 +271,19 @@
 </ol>
 <p>除此之外，还有一种叫做简单工厂模式的变体，它只包含一个工厂类和多个具体产品类。在这种模式中，客户端通过向工厂传递参数来获取所需的对象。尽管它比较简单易用，但是也存在一些缺点，例如扩展性较差、代码耦合度较高等。</p>
 <p>另外，还有工厂方法模式和抽象工厂模式两种变体，它们分别解决了工厂模式的不同问题。工厂方法模式将工厂类抽象成接口，每个具体产品都有一个对应的工厂类来创建它；抽象工厂模式则将工厂类进一步抽象化，使得每个工厂可以创建多个产品族的对象。</p>
+<h2 id="简单工厂模式"><a href="#简单工厂模式" class="headerlink" title="简单工厂模式"></a>简单工厂模式</h2><p>在 JavaScript 中，简单工厂模式通常用于创建多个具有相似属性和行为的对象。它通过一个工厂类来实现对象的创建，并返回给客户端所需的对象。例如，我们可以创建一个动物工厂，用于创建不同种类的动物对象。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义一个动物工厂函数，用于创建不同类型的动物对象</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">AnimalFactory</span>(<span class="params"></span>) &#123; &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 给AnimalFactory原型添加createAnimal方法，接收参数type表示要创建哪种动物</span></span><br><span class="line"><span class="title class_">AnimalFactory</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">createAnimal</span> = <span class="keyword">function</span> (<span class="params">type</span>) &#123;</span><br><span class="line">    <span class="comment">// 根据传入的type值进行分支判断，返回对应的动物实例化对象</span></span><br><span class="line">    <span class="keyword">switch</span> (type) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">&quot;cat&quot;</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Cat</span>(); <span class="comment">// 如果type为&quot;cat&quot;，则返回一个新的Cat实例</span></span><br><span class="line">        <span class="keyword">case</span> <span class="string">&quot;dog&quot;</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Dog</span>(); <span class="comment">// 如果type为&quot;dog&quot;，则返回一个新的Dog实例</span></span><br><span class="line">        <span class="attr">default</span>:</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">Error</span>(<span class="string">`Invalid animal type: <span class="subst">$&#123;type&#125;</span>`</span>); <span class="comment">// 如果type既不是&quot;cat&quot;也不是&quot;dog&quot;，则抛出错误提示</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义一个Cat构造函数，用于创建Cat类型的对象</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">Cat</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">name</span> = <span class="string">&quot;Cat&quot;</span>; <span class="comment">// 每个Cat实例都有一个名为name的属性，默认值为&quot;Cat&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 给Cat原型添加sayHello方法，用于打印输出一条问候语句</span></span><br><span class="line"><span class="title class_">Cat</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">sayHello</span> = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`Hello, I&#x27;m a <span class="subst">$&#123;<span class="variable language_">this</span>.name&#125;</span>`</span>); <span class="comment">// 打印输出一条问候语句，其中包含当前对象的name属性值</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义一个Dog构造函数，用于创建Dog类型的对象</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">Dog</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">name</span> = <span class="string">&quot;Dog&quot;</span>; <span class="comment">// 每个Dog实例都有一个名为name的属性，默认值为&quot;Dog&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 给Dog原型添加sayHello方法，用于打印输出一条问候语句</span></span><br><span class="line"><span class="title class_">Dog</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">sayHello</span> = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`Hello, I&#x27;m a <span class="subst">$&#123;<span class="variable language_">this</span>.name&#125;</span>`</span>); <span class="comment">// 打印输出一条问候语句，其中包含当前对象的name属性值</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>上述代码示例定义了一个动物工厂类，该类包含一个<code>createAnimal</code>方法，根据参数<code>Type</code>的值返回不同类型的动物对象。例如当<code>type</code>为<code>cat</code>时，返回一个<code>Cat</code>对象；当<code>type</code>为<code>dog</code>时，返回一个<code>Dog</code>对象。</p>
+<p>这样，我们就可以通过调用<code>AnimalFactory</code>的<code>createAnimal</code>方法，来创建所需的动物对象：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建一个名为animalFactory的常量，将其初始化为一个 new AnimalFactory() 实例</span></span><br><span class="line"><span class="keyword">const</span> animalFactory = <span class="keyword">new</span> <span class="title class_">AnimalFactory</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用animalFactory的createAnimal方法创建一只猫对象，并将其存储在cat变量中</span></span><br><span class="line"><span class="keyword">const</span> cat = animalFactory.<span class="title function_">createAnimal</span>(<span class="string">&quot;cat&quot;</span>);</span><br><span class="line"><span class="comment">// 调用cat对象的sayHello方法输出一条问候语句</span></span><br><span class="line">cat.<span class="title function_">sayHello</span>(); <span class="comment">// 输出：&quot;Hello, I&#x27;m a Cat&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用animalFactory的createAnimal方法创建一只狗对象，并将其存储在dog变量中</span></span><br><span class="line"><span class="keyword">const</span> dog = animalFactory.<span class="title function_">createAnimal</span>(<span class="string">&quot;dog&quot;</span>);</span><br><span class="line"><span class="comment">// 调用dog对象的sayHello方法输出一条问候语句</span></span><br><span class="line">dog.<span class="title function_">sayHello</span>(); <span class="comment">// 输出：&quot;Hello, I&#x27;m a Dog&quot;</span></span><br></pre></td></tr></table></figure>
 
+<h2 id="工厂方法模式"><a href="#工厂方法模式" class="headerlink" title="工厂方法模式"></a>工厂方法模式</h2><p>在 JavaScript 中，工厂方法模式通常用于创建多个不同类型的对象。它通过将对象的创建过程抽象为一个工厂接口，每个具体对象都有自己的工厂类来实现对象的创建。</p>
+<p>例如，我们可以创建一个消息工厂接口，用于创建不同类型的消息对象：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 声明一个抽象基类 `MessageFactory`，它定义了一个用于创建消息对象的方法</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MessageFactory</span> &#123;</span><br><span class="line">    <span class="title function_">createMessage</span>(<span class="params"></span>) &#123; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建一个具体工厂（`EmailMessageFactory`），它继承自 `MessageFactory`，并实现了 `createMessage()` 方法来创建邮件消息对象</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">EmailMessageFactory</span> <span class="keyword">extends</span> <span class="title class_ inherited__">MessageFactory</span> &#123;</span><br><span class="line">    <span class="title function_">createMessage</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">EmailMessage</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建另一个具体工厂（`SMSMessageFactory`），它也继承自 `MessageFactory`，并实现了 `createMessage()` 方法来创建短信消息对象</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SMSMessageFactory</span> <span class="keyword">extends</span> <span class="title class_ inherited__">MessageFactory</span> &#123;</span><br><span class="line">    <span class="title function_">createMessage</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">SMSMessage</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建一个 `EmailMessage` 消息对象，它包含一个 `send()` 方法来发送邮件消息</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">EmailMessage</span> &#123;</span><br><span class="line">    <span class="title function_">send</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Sending email message...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建一个 `SMSMessage` 消息对象，它包含一个 `send()` 方法来发送短信消息</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SMSMessage</span> &#123;</span><br><span class="line">    <span class="title function_">send</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Sending SMS message...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述代码示例定义了一个消息工厂接口，以及两个具体的工厂类<code>EmailMessageFacrory</code>和<code>SMSMessageFactory</code>。这两个工厂类都实现了<code>createMassage</code>方法，用于创建<code>EmailMessage</code>和<code>SMSMessage</code>对象。</p>
+<p>这样，我们就可以通过调用具体的工厂类来创建所需的消息对象：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建一个 `EmailMessageFactory` 工厂对象，它会创建 `EmailMessage` 消息对象</span></span><br><span class="line"><span class="keyword">const</span> emailMessageFactory = <span class="keyword">new</span> <span class="title class_">EmailMessageFactory</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用 `EmailMessageFactory` 工厂对象来创建一个 `EmailMessage` 消息对象</span></span><br><span class="line"><span class="keyword">const</span> emailMessage = emailMessageFactory.<span class="title function_">createMessage</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用 `send()` 方法发送邮件消息</span></span><br><span class="line">emailMessage.<span class="title function_">send</span>(); <span class="comment">// output: &quot;Sending email message...&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建一个 `SMSMessageFactory` 工厂对象，它会创建 `SMSMessage` 消息对象</span></span><br><span class="line"><span class="keyword">const</span> smsMessageFactory = <span class="keyword">new</span> <span class="title class_">SMSMessageFactory</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用 `SMSMessageFactory` 工厂对象来创建一个 `SMSMessage` 消息对象</span></span><br><span class="line"><span class="keyword">const</span> smsMessage = smsMessageFactory.<span class="title function_">createMessage</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用 `send()` 方法发送短信消息</span></span><br><span class="line">smsMessage.<span class="title function_">send</span>(); <span class="comment">// output: &quot;Sending SMS message...&quot;</span></span><br></pre></td></tr></table></figure>
         </div>
 
         
