@@ -506,6 +506,9 @@ header label {
   justify-content: center;
   align-items: center;
 }
+.copyright >div >a {
+  height: 32px;
+}
 .pagination {
   display: flex;
   flex-direction: row;
