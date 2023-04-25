@@ -1,13 +1,13 @@
 @font-face {
   font-family: 'JetBrains Mono';
-  src: url("http://font.inssun.cn/JetBrainsMono-Regular/JetBrainsMono-Regular.woff2") format('woff2'), url("http://font.inssun.cn/JetBrainsMono-Regular/JetBrainsMono-Regular.woff") format('woff'), url("http://font.inssun.cn/JetBrainsMono-Regular/JetBrainsMono-Regular.ttf") format('truetype'), url("http://font.inssun.cn/JetBrainsMono-Regular/JetBrainsMono-Regular.svg#JetBrainsMono-Regular") format('svg');
+  src: url("https://res.inssun.cn/font/JetBrainsMono-Regular/JetBrainsMono-Regular.woff2") format('woff2'), url("https://res.inssun.cn/font/JetBrainsMono-Regular/JetBrainsMono-Regular.woff") format('woff'), url("https://res.inssun.cn/font/JetBrainsMono-Regular/JetBrainsMono-Regular.ttf") format('truetype'), url("https://res.inssun.cn/font/JetBrainsMono-Regular/JetBrainsMono-Regular.svg#JetBrainsMono-Regular") format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'MiSans';
-  src: url("http://font.inssun.cn/MiSans-Regular/MiSans-Regular.woff2") format('woff2'), url("http://font.inssun.cn/MiSans-Regular/MiSans-Regular.woff") format('woff'), url("http://font.inssun.cn/MiSans-Regular/MiSans-Regular.ttf") format('truetype'), url("http://font.inssun.cn/MiSans-Regular/MiSans-Regular.svg#MiSans-Regular") format('svg');
+  src: url("https://res.inssun.cn/font/MiSans-Regular/MiSans-Regular.woff2") format('woff2'), url("https://res.inssun.cn/font/MiSans-Regular/MiSans-Regular.woff") format('woff'), url("https://res.inssun.cn/font/MiSans-Regular/MiSans-Regular.ttf") format('truetype'), url("https://res.inssun.cn/font/MiSans-Regular/MiSans-Regular.svg#MiSans-Regular") format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
