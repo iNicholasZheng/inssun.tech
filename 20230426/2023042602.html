@@ -128,6 +128,71 @@
                 <div class="container">
     
     
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
 
     
     <article class="post-wrap">
@@ -158,7 +223,7 @@
 
         <div class="post-content">
             <p>单例模式是一种创建型设计模式，其主要目的是确保一个类只有一个实例，并提供一个访问该实例的全局唯一入口。当应用陈旭只需要使用一个对象，但又希望保证该对象只有一个实例的时候，我们就可以使用单例模式。它可以确保在整个引用程序中，同一个类的对象指挥被创建一次，从而达到节省系统资源的目的。</p>
-<p>单例模式的时间方式很简单，一般采用静态变量来保存单例对象，然后提供一个静态方法来获取对象。为了防止多个线程同时创建单例对象，需要使用线程安全的方式进行实现，可以采用同步锁或者双重检查等方式来确保线程安全。</p>
+<p>单例模式的实现方式很简单，一般采用静态变量来保存单例对象，然后提供一个静态方法来获取对象。为了防止多个线程同时创建单例对象，需要使用线程安全的方式进行实现，可以采用同步锁或者双重检查等方式来确保线程安全。</p>
 <p>除了上述的优点和缺点外，单例模式还有以下的特点：</p>
 <ol>
 <li>单例类的构造方法必须被标记为私有，以防止其它类直接调用构造方法创建实例。这也是单例模式的核心四象之一；</li>
@@ -172,10 +237,15 @@
 </ol>
 <p>综上所述，单例模式是一种非常常用的设计模式，能够有效地保证同一类对象只被创建一次，并提供了全局唯一访问点，但是在使用时也需要注意一些问题。</p>
 <p>在 JavaScript 中，单例模式通常使用对象字面量来实现。对象字面量是一种简洁的语法，可以创建一个对象并设置其属性和方法。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> singleton = &#123;</span><br><span class="line">    <span class="comment">// 属性</span></span><br><span class="line">    <span class="attr">property1</span>: <span class="string">&#x27;value1&#x27;</span>,</span><br><span class="line">    <span class="attr">property2</span>: <span class="string">&#x27;value2&#x27;</span>,</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 方法</span></span><br><span class="line">    <span class="attr">method1</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;method1&#x27;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">method2</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;method2&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用</span></span><br><span class="line">singleton.<span class="title function_">method1</span>(); <span class="comment">// 输出 &quot;method1&quot;</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(singleton.<span class="property">property1</span>); <span class="comment">// 输出 &quot;value1&quot;</span></span><br></pre></td></tr></table></figure>
+<h2 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> singleton = &#123;</span><br><span class="line">    <span class="comment">// 属性</span></span><br><span class="line">    <span class="attr">property1</span>: <span class="string">&#x27;value1&#x27;</span>,</span><br><span class="line">    <span class="attr">property2</span>: <span class="string">&#x27;value2&#x27;</span>,</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 方法</span></span><br><span class="line">    <span class="attr">method1</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;method1&#x27;</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">method2</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;method2&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用</span></span><br><span class="line">singleton.<span class="title function_">method1</span>(); <span class="comment">// 输出 &quot;method1&quot;</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(singleton.<span class="property">property1</span>); <span class="comment">// 输出 &quot;value1&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p>在上述代码中，我们使用对象字面量创建了一个名为<code>singleton</code>的对象。该对象包含了<code>property1</code>和<code>property2</code>两个属性，以及<code>method1</code>和<code>method2</code>两个方法。这个对象就是一个单例对象，因为制备创建了一次，其它地方都可以通过引用它来进行访问。</p>
-<p>在 JavaScript 中，由于没有类的概念，对象字面量可以作为一种简单的单例模式实现方式。但是，如果需要更复杂的逻辑或者需要支持继承等特征，可以考虑使用构造函数、闭包等方式进行实现。</p>
+<p>此种方式的优点在于简单、直观，没有太多额外代码和抽象概念。同时，由于是一个全局对象，因此可以方便地在任何地方使用和修改对象的属性和方法。然而这种方式的缺点也比较明显。首先，它会导致全局变量污染，如果有多个开发人员同时维护改代码库，很容易出现变量名冲突等问题。其次，该实现方式不支持延迟加载，在页面加载时就以及创建了单例对象，可能会影响页面的加载速度。</p>
+<h2 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用立即执行函数封装实现单例模式的代码，避免暴露全局变量</span></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">Singleton</span> = (<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="comment">// 定义单例对象</span></span><br><span class="line">    <span class="keyword">let</span> instance;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 返回一个构造函数</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">function</span> (<span class="params">name, age</span>) &#123;</span><br><span class="line">        <span class="comment">// 检查是否已经存在单例对象</span></span><br><span class="line">        <span class="keyword">if</span> (instance) &#123;</span><br><span class="line">            <span class="comment">// 如果有，直接返回该对象</span></span><br><span class="line">            <span class="keyword">return</span> instance;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 如果没有，则创建新对象</span></span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">name</span> = name;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">age</span> = age;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 绑定到静态变量 instance，保证唯一性</span></span><br><span class="line">        instance = <span class="variable language_">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建实例</span></span><br><span class="line"><span class="keyword">const</span> singleton1 = <span class="keyword">new</span> <span class="title class_">Singleton</span>(<span class="string">&#x27;张三&#x27;</span>, <span class="number">18</span>);</span><br><span class="line"><span class="keyword">const</span> singleton2 = <span class="keyword">new</span> <span class="title class_">Singleton</span>(<span class="string">&#x27;李四&#x27;</span>, <span class="number">20</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 验证 singleton1 和 singleton2 是否是同一个对象</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(singleton1 === singleton2); <span class="comment">// 输出 true，因为 singleton1 和 singleton2 引用的是同一个对象</span></span><br></pre></td></tr></table></figure>
+
+<p>在上述代码中，通过立即执行函数封装实现了单例模式的代码，为了避免暴露全局变量。在这里，<code>Singleton</code>是一个返回构造函数的立即执行函数，该构造函数可以创建一个单例对象。具体实现中，该代码先定义了一个静态变量<code>instance</code>用于存储单例对象，如果<code>instance</code>已经存在，则直接返回该对象。否则，创建一个新对象，将参数绑定到新对象上，并将新对象赋值给<code>instance</code>变量，以保证单例对象的唯一性。最后，使用该构造函数分别创建了两个实例，并验证它们是否是同一个对象，输出结果为<code>true</code>，说明了它们确实是同一个对象。</p>
+<p>相比于第一种方式，此种方式使用了立即执行函数封装实现了单例模式的代码，并避免了暴露全局变量。该方式的优点在于避免了全局变量污染，使用立即执行函数可以将单例对象封装在函数内部，从而确保单例模式的唯一性。同时，该实现方法支持延迟加载，在需要使用单例对象时才会创建该对象，避免了性能损耗。然后，该方式的缺点也比较明显。首先，相比于字面量方式，它的实现方式相对复杂，需要用到闭包和函数作用域等概念。其次，由于单例对象被封装在函数内部，因此不能直接访问和修改单例对象的属性和方法，需要通过函数暴露的接口来实现。</p>
+<p>其次在 JavaScript 中，由于没有类的概念，对象字面量可以作为一种简单的单例模式实现方式。但是，如果需要更复杂的逻辑或者需要支持继承等特征，可以考虑使用构造函数、闭包等方式进行实现。</p>
 <p>总之，在 JavaScript 中实现单例模式需要注意以下几点：</p>
 <ol>
 <li>使用对象字面量或者构造函数等方式创建单例对象；</li>
