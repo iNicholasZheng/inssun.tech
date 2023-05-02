@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Matthew">
+
+
+    <meta name="subtitle" content="一个懂互联网的小道士！">
+
+
+
+
+<title>详解 JavaScript 三种数据结构 | Matthew&#39;s Blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Matthew&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Matthew&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">详解 JavaScript 三种数据结构</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Matthew</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">五月 2, 2023&nbsp;&nbsp;23:07:45</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/JavaScript/">JavaScript</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>在 JavaScript 中，有三种常用的数据结构是我们必须要了解的，它们分别是栈、堆和队列。它们是理解整个 JavaScript 核心的基础，在 JavaScript 中分别由不同的应用场景。</p>
+<h2 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h2><p>当我们在学习中遇到栈这个名词的时候，可能面临的是不同的含义。如果没有理清不同的应用场景，就会给我们的理解带来困惑。</p>
+<p>场景一：栈是一种数据结构，它表达的是数据的一种存取方式，这是一种理论基础。</p>
+<p>场景二：栈可用来规定代码的执行顺序，在  JavaScript 中叫做函数调用栈，它是根据栈数据结构理论而实现的一种实践。</p>
+<p>场景三：栈表达的是一种数据在内存中的存储区域，通常叫做栈区。但是 JavaScript 作为一门高级程序语言，并没有同其他语言那样区分栈区和堆区，因此这里不做扩展。我们可以简单粗暴认为在 JavaScript 中，所有的数据都是存放在堆内存空间中的。</p>
+<p>这里需要重点掌握栈这种数据结构的原理与特点，学习它的最终目的是掌握函数调用栈的运行方式。通过下图我们可以直观的理解栈的存取方式。</p>
+<img src="/images/20230503/202305030101.svg" width="70%">
+
+<p>如上图所示，在乒乓球盒子中依次放入乒乓球，当想要取出来使用的时候，处于盒子顶端的乒乓球 5，它一定是最后被放进去且最先被取出来的。而想要使用底层的乒乓球 1，则必须要先将上面的所有乒乓球取出来以后才能取出。但乒乓球 1 是最先放入盒子中的。</p>
+<p>这种乒乓球的存取方式与栈数据结构如出一辙。这种存取方式的特点可总结为先进后出，后进先出（LIFO, Last In, First Out）。如图右侧所示，处于栈顶的数据<code>true</code>，最后进栈，最先出栈。处于栈底的数据 1，最先进栈，最后出栈。</p>
+<p>在 JavaScript 中，数组（Array）提供了两个栈方法来对应栈的这种存取方式，它们在实践中非常常用。</p>
+<h3 id="push：向素组末尾添加元素（进栈方法）"><a href="#push：向素组末尾添加元素（进栈方法）" class="headerlink" title="push：向素组末尾添加元素（进栈方法）"></a>push：向素组末尾添加元素（进栈方法）</h3><p><code>push</code>方法可以接收任意参数，并将其逐个添加到数组末尾，并返回数组修改后的长度。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a =[];</span><br><span class="line">a.<span class="title function_">push</span>(<span class="number">1</span>); <span class="comment">// a:[1]</span></span><br><span class="line">a.<span class="title function_">push</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">6</span>); <span class="comment">// a:[1, 2, 3, 6]</span></span><br><span class="line"><span class="keyword">let</span> <span class="number">1</span> = a .<span class="title function_">push</span>(<span class="number">5</span>); <span class="comment">// a:[1, 3, 3, 6, 5] l:5</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="pop：弹出数据最末尾的一个元素（出栈方法）"><a href="#pop：弹出数据最末尾的一个元素（出栈方法）" class="headerlink" title="pop：弹出数据最末尾的一个元素（出栈方法）"></a>pop：弹出数据最末尾的一个元素（出栈方法）</h3><p><code>pop</code>方法会删除数组最末尾的一个元素，并返回。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">a.<span class="title function_">pop</span>(); <span class="comment">// a:[1, 2]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// a.pop()的返回结果为 3</span></span><br></pre></td></tr></table></figure>
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/JavaScript/"># JavaScript</a>
+                    
+                        <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"># 数据结构</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">Back</a>
+                <span>· </span>
+                <a href="/">Home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/20230426/2023042604.html">发布订阅模式在 JavaScript 中的应用</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <div>本网站由<a href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral" target="_blank"><img src="/image/logo.png" height="32px"></a>提供CDN加速/云存储服务</div>
+        <span>Copyright © 2020-2023 Matthew. All Rights Reserved</span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
