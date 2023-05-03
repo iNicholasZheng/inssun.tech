@@ -277,6 +277,16 @@
 
 <h3 id="pop：弹出数据最末尾的一个元素（出栈方法）"><a href="#pop：弹出数据最末尾的一个元素（出栈方法）" class="headerlink" title="pop：弹出数据最末尾的一个元素（出栈方法）"></a>pop：弹出数据最末尾的一个元素（出栈方法）</h3><p><code>pop</code>方法会删除数组最末尾的一个元素，并返回。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">a.<span class="title function_">pop</span>(); <span class="comment">// a:[1, 2]</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// a.pop()的返回结果为 3</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h2><p>堆数据结构通常是一种树状结构。它的存取方式与在书架上取书的方式非常相似。书虽然整齐地摆放在书架上，但是只要知道书的名字，在书架中找到它之后就可以很方便地取出，甚至我们都不用关心它的存放顺序，即不用像从乒乓球盒子中取乒乓球那样，必须将一些乒乓球拿出来之后才能取到中间的某一个乒乓球。</p>
+<img src="/images/20230503/202305030102.svg" width="70%">
+
+<p>该示意图可以用字面量对象的形式体现出来。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> testHeap = &#123;</span><br><span class="line">    <span class="attr">a</span>: <span class="number">10</span>,</span><br><span class="line">    <span class="attr">b</span>: <span class="number">20</span>,</span><br><span class="line">    <span class="attr">c</span>: &#123;</span><br><span class="line">        <span class="attr">m</span>: <span class="number">100</span>,</span><br><span class="line">        <span class="attr">n</span>: <span class="number">110</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当我们想要访问 a 时，只需要通过<code>testHeap.a</code>来访问即可，而不用关心 a、b、c 的具体顺序。</p>
+<h2 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h2><p>在 JavaScript 中，理解队列数据结构的目的是为了搞清楚事件循环机制到底是怎么回事。队列是一种先进先出（FIFO）的数据结构。正如同排队过安检一样，排在队伍前面的人一定是最先过安检的人。队列原理如下图所示。</p>
+<img src="/images/20230503/202305030103.svg">
         </div>
 
         
