@@ -253,6 +253,13 @@
 <img src="/images/20230504/202305040105.svg">
 
 <h2 id="内存空间管理"><a href="#内存空间管理" class="headerlink" title="内存空间管理"></a>内存空间管理</h2><p>因为自动垃圾回收机制的存在，使得我们在开发时好像并不用那么关心内存的使用问题，内存的分配和回收完全实现了自动管理。但是根据经验来看，了解内存机制有助于自己清晰地认识到自己写的代码在执行过程中都发生了什么，从而写出性能较为优秀的代码。因此在成为更好的前端开发者的道路上，关心内存空间管理是一件非常重要的事情。</p>
+<p>下面通过一个非常简单的例子来了解内存空间的使用过程。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a =<span class="number">20</span>;</span><br><span class="line"><span class="title function_">alert</span>(a + <span class="number">100</span>);</span><br><span class="line">a = <span class="literal">null</span>;</span><br></pre></td></tr></table></figure>
+
+<p>上面的三条语句，分别对应：分配内存、使用分配到的内存以及不需要时释放内存。</p>
+<p>分配内存与使用内存都比较好理解，我们需要重点理解的是第三个过程。这里涉及到 JavaScript 垃圾回收机制的实现原理。JavaScript 的垃圾回收实现主要依靠“引用”这一概念。当一块内存中的数据能够被访问时，垃圾回收器就认为“该数据能够被获得”。不能够被获得的数据，就会被打上标记，并回收内存空间。这种方式叫做标记——清除算法。</p>
+<p>这个算法会设置一个全局对象，并定期地从全局对象开始查找、垃圾回收器会找到所有可以获得与不能够被获得的数据。因此在上面的这个例子中，当我们将<code>a</code>设置为<code>null</code>时，那么刚开始分配的<code>20</code>，就无法被访问到了，而是很快被自动回收。</p>
+<p>在局部作用域中，当函数执行完毕后，局部变量也就没有存在的必要了，因此垃圾收集器很容易做出判断并回收。但是在全剧终，变量什么时候需要自动释放内存空间则很难判断，因此我们在开发时，应当尽量避免使用全局变量。如果使用了全局变量，则建议不再使用它时，通过<code>a=null</code>这样的方式释放引用，从而确保能够及时回收内存空间。</p>
 
         </div>
 
