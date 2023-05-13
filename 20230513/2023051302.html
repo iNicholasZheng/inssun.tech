@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Matthew">
+
+
+    <meta name="subtitle" content="一个懂互联网的小道士！">
+
+
+
+
+<title>浅谈 JavaScript 内存泄露 | Matthew&#39;s Blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Matthew&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Matthew&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">浅谈 JavaScript 内存泄露</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Matthew</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">五月 13, 2023&nbsp;&nbsp;19:45:42</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/JavaScript/">JavaScript</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>在计算机中，内存是较为有限的资源，因此程序必须管理内存以确保其有效使用。在 C++ 等编程语言中，程序可以通过动态内存分配函数（如：<code>malloc()</code>或<code>new</code>）分配空间。当程序不再需要某个内存空间时，必须使用<code>free()</code>或<code>delete</code>操作符释放内存空间，以便于操作系统可以将其重新分配给其它程序使用。而在 JavaScript 中，因为系统有垃圾自动回收机制，所以对于前端开发人员来说，内存空间并不必须要我们去手动分配或释放，所以经常被大家忽视，但是其实内存空间才是真正的基础。虽然 JavaScript 有着垃圾自动回收机制，但是却并不完美，在特定情况下依旧会造成内存泄露，而内存泄漏则会导致程序运行缓慢、崩溃或者系统变得不稳定，甚至耗尽系统内存导致其它程序无法获得足够的内存空间运行。</p>
+<h2 id="JavaScript-垃圾回收机制"><a href="#JavaScript-垃圾回收机制" class="headerlink" title="JavaScript 垃圾回收机制"></a>JavaScript 垃圾回收机制</h2><p>JavaScript 引擎使用垃圾回收机制来自动管理内存。垃圾回收器会定期扫描程序中的内存，查找不再被引用的对象和变量，将其标记为垃圾对象，并释放其占用的内存空间。目前 JavaScript 引擎使用了两种垃圾回收算法，分别是：标记清除和引用计数。</p>
+<ul>
+<li>标记清除：当垃圾回收器扫描程序中的内存时，它会标记不再被引用的对象，并将其占用的内存空间进行释放。其效率高，但会导致程序暂停，直至垃圾回收完成；</li>
+<li>引用计数：引用计数算法会跟踪每个对象被引用的次数。当对象不再被引用的时候，垃圾回收器便将会将其自动释放。其虽然效率较高，但是会出现循环引用问题。</li>
+</ul>
+<h2 id="并不完美的-JavaScript-垃圾回收机制"><a href="#并不完美的-JavaScript-垃圾回收机制" class="headerlink" title="并不完美的 JavaScript 垃圾回收机制"></a>并不完美的 JavaScript 垃圾回收机制</h2><p>正如本文开头所言，虽然 JavaScript 有着垃圾自动回收机制，但是其并不完美，在特定情况下依旧会造成内存泄露，比如全局变量、定时器未清除、闭包和循环引用等均有可能造成内存泄露。</p>
+<h3 id="全局变量"><a href="#全局变量" class="headerlink" title="全局变量"></a>全局变量</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义一个全局变量，该变量会一直存在于内存中</span></span><br><span class="line"><span class="keyword">let</span> myGlobalVariable = <span class="string">&quot;Hello, world!&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义一个函数，该函数会不断地向数组中添加元素</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">addToMyArray</span>(<span class="params">value</span>) &#123;</span><br><span class="line">  <span class="comment">// 如果 myArray 不存在，则创建一个空数组</span></span><br><span class="line">  <span class="keyword">if</span> (!<span class="variable language_">window</span>.<span class="property">myArray</span>) &#123;</span><br><span class="line">    <span class="variable language_">window</span>.<span class="property">myArray</span> = [];</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="variable language_">window</span>.<span class="property">myArray</span>.<span class="title function_">push</span>(value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码定义了一个全局变量 <code>myGlobalVariable</code> 和一个函数 <code>addToMyArray()</code>，该函数会不断地向数组中添加元素。</p>
+<p>在第 3 行，使用 <code>let</code> 关键字定义了一个全局变量 <code>myGlobalVariable</code>，该变量会一直存在于内存中直到程序结束。由于使用 <code>let</code> 关键字定义的变量具有块级作用域，因此不会被挂在到 <code>window</code> 对象上，而是直接存在于全局作用域中。</p>
+<p>在第 6-11 行，定义了一个函数 <code>addToMyArray()</code>，该函数会向数组中添加新元素。如果 <code>myArray</code> 数组不存在，则在第 8 行创建一个空数组。然后，在第 10 行，将新元素添加到 <code>myArray</code> 数组中。</p>
+<p>在第 9 行，使用 <code>window</code> 对象引用了全局变量 <code>myArray</code>。由于 <code>window</code> 对象是 JavaScript 中的全局对象，因此 <code>myArray</code> 数组成为了一个全局变量，即使在函数执行完毕后，数组中的元素依然存在于内存中，因此会导致内存占用过高，从而影响程序的性能。</p>
+<p>为了避免这种情况，我们可以使用 <code>let</code> 或 <code>const</code> 关键字定义变量，以避免将变量挂载到全局对象上。同时，应该在不需要全局变量和全局对象时，及时将其清除，以便垃圾回收机制可以释放内存空间。例如，可以将 <code>addToMyArray()</code> 函数改为以下形式：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">addToMyArray</span>(<span class="params">value</span>) &#123;</span><br><span class="line">  <span class="keyword">let</span> myArray = [];</span><br><span class="line">  myArray.<span class="title function_">push</span>(value);</span><br><span class="line">  <span class="keyword">return</span> myArray;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在上述示例中，我们使用 <code>let</code> 关键字定义了一个局部变量 <code>myArray</code>，并将新元素添加到该数组中。由于该变量是局部变量，它只存在于函数的作用域中，不会被挂载到全局对象上，因此不会导致内存泄漏。同时，在函数执行完毕后，<code>myArray</code> 变量也会被释放，从而避免了内存泄漏的问题。</p>
+<h3 id="定时器未清除"><a href="#定时器未清除" class="headerlink" title="定时器未清除"></a>定时器未清除</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义一个定时器，该定时器会不断地向数组中添加元素</span></span><br><span class="line"><span class="built_in">setInterval</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// 如果 myArray 不存在，则创建一个空数组</span></span><br><span class="line">  <span class="keyword">if</span> (!<span class="variable language_">window</span>.<span class="property">myArray</span>) &#123;</span><br><span class="line">    <span class="variable language_">window</span>.<span class="property">myArray</span> = [];</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="variable language_">window</span>.<span class="property">myArray</span>.<span class="title function_">push</span>(<span class="keyword">new</span> <span class="title class_">Date</span>());</span><br><span class="line">&#125;, <span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
+
+<p>在上面的示例中，定义了一个定时器，该定时器会每秒向数组中添加一个新元素。由于定时器未被清除，该定时器会一直存在于内存中，即使程序结束。同时，由于每秒向数组中添加一个新元素，数组中的元素会越来越多，从而导致内存占用过高，影响程序的性能。</p>
+<p>为了避免这种情况，应该在不需要定时器时，及时清除定时器。例如，在函数执行完毕后，使用 <code>clearInterval</code> 函数清除定时器：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> timerId = <span class="built_in">setInterval</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;, <span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 清除定时器</span></span><br><span class="line"><span class="built_in">clearInterval</span>(timerId);</span><br></pre></td></tr></table></figure>
+
+<h3 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">createCounter</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">let</span> count = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    count++;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(count);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> counter = <span class="title function_">createCounter</span>();</span><br><span class="line"><span class="title function_">counter</span>(); <span class="comment">// 输出 1</span></span><br><span class="line"><span class="title function_">counter</span>(); <span class="comment">// 输出 2</span></span><br></pre></td></tr></table></figure>
+
+<p>在上面的示例中，<code>createCounter</code> 函数返回一个闭包，该闭包会引用外部函数中的变量 <code>count</code>。由于闭包中的变量不会被垃圾回收机制自动释放，因此会导致内存泄漏。</p>
+<p>为了避免这种情况，应该在不需要闭包时，及时将其变量设为 <code>null</code>，以便垃圾回收机制可以释放内存空间：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">createCounter</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">let</span> count = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    count++;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(count);</span><br><span class="line">    <span class="comment">// 当不再需要闭包时，将其变量设为 null</span></span><br><span class="line">    <span class="keyword">if</span> (count &gt;= <span class="number">10</span>) &#123;</span><br><span class="line">      count = <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> counter = <span class="title function_">createCounter</span>();</span><br><span class="line"><span class="title function_">counter</span>(); <span class="comment">// 输出 1</span></span><br><span class="line"><span class="title function_">counter</span>(); <span class="comment">// 输出 2</span></span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"><span class="title function_">counter</span>(); <span class="comment">// 输出 10</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="循环引用"><a href="#循环引用" class="headerlink" title="循环引用"></a>循环引用</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Node</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">next</span> = <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> node1 = <span class="keyword">new</span> <span class="title class_">Node</span>();</span><br><span class="line"><span class="keyword">let</span> node2 = <span class="keyword">new</span> <span class="title class_">Node</span>();</span><br><span class="line">node1.<span class="property">next</span> = node2;</span><br><span class="line">node2.<span class="property">next</span> = node1;</span><br></pre></td></tr></table></figure>
+
+<p>在上面的示例中，定义了两个 <code>Node</code> 对象，它们相互引用，即 <code>node1.next</code> 指向了 <code>node2</code>，而 <code>node2.next</code> 又指向了 <code>node1</code>。由于这两个对象相互引用，即使它们不再被引用，也无法被垃圾回收机制释放，从而导致内存泄漏。</p>
+<p>为了避免这种情况，应该避免对象之间形成循环引用，或者手动将循环引用的对象设为 <code>null</code>，以便垃圾回收机制可以释放内存空间：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Node</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="variable language_">this</span>.<span class="property">next</span> = <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> node1 = <span class="keyword">new</span> <span class="title class_">Node</span>();</span><br><span class="line"><span class="keyword">let</span> node2 = <span class="keyword">new</span> <span class="title class_">Node</span>();</span><br><span class="line">node1.<span class="property">next</span> = node2;</span><br><span class="line">node2.<span class="property">next</span> = <span class="literal">null</span>; <span class="comment">// 将循环引用的对象设为 null</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="console-log"><a href="#console-log" class="headerlink" title="console.log()"></a>console.log()</h3><p>在 JavaScript 中，<code>console.log()</code> 函数本身并不会导致内存泄漏。<code>console.log()</code> 函数只是将其参数打印到控制台上，不会对内存空间进行任何操作。</p>
+<p>然而，在某些情况下，如果传递给 <code>console.log()</code> 函数的参数是一个对象或数组，且该对象或数组是动态生成的，而且在控制台中保持打开状态，就可能会导致内存泄漏。这是因为控制台会持有该对象或数组的引用，使得该对象或数组不会被垃圾回收机制释放。</p>
+<p>以下是一个示例，展示了如何在控制台中使用 <code>console.log()</code> 函数来导致内存泄漏：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">createArray</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">let</span> arr = [];</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">100</span>; i++) &#123;</span><br><span class="line">    arr.<span class="title function_">push</span>(i);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> arr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> myArray = <span class="title function_">createArray</span>();</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(myArray);</span><br></pre></td></tr></table></figure>
+
+<p>在上面的示例中，定义了一个 <code>createArray()</code> 函数，该函数会返回一个包含 100 个整数的数组。然后将该数组传递给 <code>console.log()</code> 函数，以便在控制台中打印该数组。如果在控制台中保持打开状态，该数组就会一直存在于内存中，即使它不再被引用，也无法被垃圾回收机制释放。</p>
+<p>为了避免这种情况，可以将动态生成的对象或数组转换为字符串，并使用 <code>console.log()</code> 函数打印该字符串，而不是直接将对象或数组传递给 <code>console.log()</code> 函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">createArray</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">let</span> arr = [];</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">100</span>; i++) &#123;</span><br><span class="line">    arr.<span class="title function_">push</span>(i);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> arr;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> myArray = <span class="title function_">createArray</span>();</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title class_">JSON</span>.<span class="title function_">stringify</span>(myArray)); <span class="comment">// 将数组转换为字符串，并打印该字符串</span></span><br></pre></td></tr></table></figure>
+
+<p>在上面的示例中，使用 <code>JSON.stringify()</code> 函数将数组转换为字符串，并使用 <code>console.log()</code> 函数打印该字符串。由于字符串并不会被控制台持有引用，因此不会导致内存泄漏。</p>
+<p>总之，<code>console.log()</code> 函数本身并不会导致内存泄漏，但在某些情况下，如果传递给 <code>console.log()</code> 函数的参数是一个对象或数组，且该对象或数组是动态生成的，而且在控制台中保持打开状态，就可能会导致内存泄漏。为了避免这种情况，可以将动态生成的对象或数组转换为字符串，并使用 <code>console.log()</code> 函数打印该字符串。</p>
+<h3 id="DOM-泄露"><a href="#DOM-泄露" class="headerlink" title="DOM 泄露"></a>DOM 泄露</h3><p>在 JavaScript 中，DOM 泄漏是指未及时清除对 DOM 元素的引用，从而导致浏览器无法释放与该元素相关的内存空间，最终导致内存占用过高，影响程序的性能和稳定性。</p>
+<p>以下是一些可能导致 DOM 泄漏的情况：</p>
+<h4 id="事件监听器未移除"><a href="#事件监听器未移除" class="headerlink" title="事件监听器未移除"></a>事件监听器未移除</h4><p>当元素上注册的事件监听器没有被及时移除时，该元素及其相关的内存空间就一直存在于内存中，即使该元素已经被从 DOM 树中移除。</p>
+<p>例如，在以下示例中，我们向 <code>button</code> 元素添加了一个点击事件监听器。当用户点击该按钮时，该事件监听器会被触发，并执行相应的代码。然而，当该元素被从 DOM 树中移除时，事件监听器并没有被及时移除，从而导致该元素及其相关的内存空间无法被释放，最终导致内存泄漏。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> button = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;button&#x27;</span>);</span><br><span class="line"></span><br><span class="line">button.<span class="title function_">addEventListener</span>(<span class="string">&#x27;click&#x27;</span>, <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 当元素被移除时，应该及时移除事件监听器</span></span><br><span class="line">button.<span class="property">parentNode</span>.<span class="title function_">removeChild</span>(button);</span><br></pre></td></tr></table></figure>
+
+<p>为了避免这种情况，我们应该在元素被移除时，及时移除该元素上注册的事件监听器。例如，在上述示例中，我们可以在移除元素之前，先移除事件监听器：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> button = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;button&#x27;</span>);</span><br><span class="line"></span><br><span class="line">button.<span class="title function_">addEventListener</span>(<span class="string">&#x27;click&#x27;</span>, <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 先移除事件监听器</span></span><br><span class="line">button.<span class="title function_">removeEventListener</span>(<span class="string">&#x27;click&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 然后再移除元素</span></span><br><span class="line">button.<span class="property">parentNode</span>.<span class="title function_">removeChild</span>(button);</span><br></pre></td></tr></table></figure>
+
+<h4 id="定时器未清除-1"><a href="#定时器未清除-1" class="headerlink" title="定时器未清除"></a>定时器未清除</h4><p>与事件监听器类似，定时器是另一个可能导致 DOM 泄漏的原因。当定时器未被及时清除时，相关的内存空间就会一直存在于内存中，从而导致内存泄漏。</p>
+<p>例如，在以下示例中，我们使用 <code>setInterval()</code> 函数创建了一个定时器，该定时器会每隔一秒钟向 <code>body</code> 元素添加一个新的 <code>div</code> 元素。然而，由于定时器未被及时清除，该定时器会一直存在于内存中，即使 <code>body</code> 元素已经被从 DOM 树中移除。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> counter = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">setInterval</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">let</span> div = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;div&#x27;</span>);</span><br><span class="line">  div.<span class="property">textContent</span> = <span class="string">&#x27;div &#x27;</span> + counter;</span><br><span class="line">  <span class="variable language_">document</span>.<span class="property">body</span>.<span class="title function_">appendChild</span>(div);</span><br><span class="line">  counter++;</span><br><span class="line">&#125;, <span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 当元素被移除时，应该及时清除定时器</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="property">body</span>.<span class="property">parentNode</span>.<span class="title function_">removeChild</span>(<span class="variable language_">document</span>.<span class="property">body</span>);</span><br></pre></td></tr></table></figure>
+
+<p>为了避免这种情况，我们应该在不需要使用定时器时，及时清除该定时器。例如，在上述示例中，我们可以在移除元素之前，先清除定时器：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> counter = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> intervalId = <span class="built_in">setInterval</span>(<span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">let</span> div = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;div&#x27;</span>);</span><br><span class="line">  div.<span class="property">textContent</span> = <span class="string">&#x27;div &#x27;</span> + counter;</span><br><span class="line">  <span class="variable language_">document</span>.<span class="property">body</span>.<span class="title function_">appendChild</span>(div);</span><br><span class="line">  counter++;</span><br><span class="line">&#125;, <span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 先清除定时器</span></span><br><span class="line"><span class="built_in">clearInterval</span>(intervalId);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 然后再移除元素</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="property">body</span>.<span class="property">parentNode</span>.<span class="title function_">removeChild</span>(<span class="variable language_">document</span>.<span class="property">body</span>);</span><br></pre></td></tr></table></figure>
+
+<p>总之，JavaScript 内存泄漏是一种常见的问题，可能导致程序的性能和稳定性受到严重影响。不仅会让我们的程序内存占用高、运行缓慢、用户体验差，还会让我们的开发人员难以调试，增加我们的工作量和复杂度。为了避免 JavaScript 内存泄漏，我们应该遵循以下几个原则：</p>
+<ul>
+<li>及时释放不再使用的内存空间：当不再需要使用某个变量或对象时，应该及时将其释放，以便垃圾回收机制可以回收相应的内存空间；</li>
+<li>避免创建过多的全局变量和对象：过多的全局变量和对象可能导致内存占用过高，从而增加内存泄漏的风险；</li>
+<li>及时清除定时器和事件监听器：定时器和事件监听器可能会导致内存泄漏，应该及时清除它们，以便相关的内存空间可以被释放；</li>
+<li>避免循环引用：循环引用可能导致垃圾回收机制无法正确释放内存空间，应该避免这种情况的发生。</li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/JavaScript/"># JavaScript</a>
+                    
+                        <a href="/tags/%E7%BB%8F%E5%85%B8%E9%9D%A2%E8%AF%95%E9%A2%98/"># 经典面试题</a>
+                    
+                        <a href="/tags/%E5%86%85%E5%AD%98/"># 内存</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">Back</a>
+                <span>· </span>
+                <a href="/">Home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/20230513/2023051301.html">在 JavaScript 中异步创建的动态元素，jQuery 为何无法正常获取元素？</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <div>本网站由<a href="https://www.upyun.com/?utm_source=lianmeng&utm_medium=referral" target="_blank"><img src="/image/logo.png" height="32px"></a>提供CDN加速/云存储服务</div>
+        <span>Copyright © 2020-2023 Matthew. All Rights Reserved</span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
