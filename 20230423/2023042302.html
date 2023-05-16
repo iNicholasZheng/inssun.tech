@@ -6,6 +6,9 @@
 <meta name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
+<script src="https://cdn.staticfile.org/jquery/3.7.0/jquery.js"></script>
+<script src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.js"></script>
+<link rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.css"/>
 
     <meta name="author" content="Matthew">
 
@@ -266,13 +269,17 @@
 
 <h2 id="横向模糊匹配"><a href="#横向模糊匹配" class="headerlink" title="横向模糊匹配"></a>横向模糊匹配</h2><p>横向模糊指的是，一个正则可匹配的字符串的长度不是固定的，可以是多种情况的。其实现的方法是使用两次，譬如<code>m,n</code>，表示连续出现最少 $m$ 次，最多 $n$ 次。</p>
 <p>比如正则<code>/ab&#123;2,5&#125;c/</code>表示匹配这样一个字符串：第一个字符是<code>&quot;a&quot;</code>，接下来是 $2$ 到 $5$ 个字符到<code>&quot;b&quot;</code>，最后一个字符是<code>&quot;c&quot;</code>，其可视化形式如下：</p>
-<img src="/images/20230423/202304230201.webp">
+<a href="/images/20230423/202304230201.webp" data-fancybox="gallery" data-download-src="/images/20230423/202304230201.webp" data-caption="正则表达式：/ab{2,5}c/">
+  <img src="/images/20230423/202304230201.webp" width="50%"/>
+</a>
 
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> regex = <span class="regexp">/ab&#123;2,5&#125;c/g</span>;</span><br><span class="line"><span class="keyword">let</span> string = <span class="string">&quot;abc abbc abbbc abbbbc abbbbbc abbbbbbc&quot;</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(string.<span class="title function_">match</span>(regex)); <span class="comment">// [&quot;abbc&quot;, &quot;abbbc&quot;, &quot;abbbbc&quot;, &quot;abbbbbc&quot;]</span></span><br></pre></td></tr></table></figure>
 
 <p>在上述代码示例中，使用的正则是<code>ab&#123;2,5&#125;c/g</code>，其中<code>g</code>是正则的一个修饰符。表示全局匹配，即在目标字符串中按照顺序找到满足匹配模式的所有子串，强调的是“所有”，而不只是“第一个”。<code>g</code>是单词<code>global</code>的首字母。</p>
 <h2 id="纵向模糊匹配"><a href="#纵向模糊匹配" class="headerlink" title="纵向模糊匹配"></a>纵向模糊匹配</h2><p>纵向模糊指的是，一个正则匹配的字符串，具体到某一位字符时，它可以不是某个确定的字符，可以有多种可能。其实现的方式是使用字符组。譬如<code>[abc]</code>，表示该字符可以是<code>&quot;a&quot;</code>、<code>&quot;b&quot;</code>、<code>&quot;c&quot;</code>中的任意一个。比如<code>/a[123]b/</code>可以匹配如下三种字符串：<code>&quot;a1b&quot;</code>、<code>&quot;a2b&quot;</code>、<code>&quot;a3b&quot;</code>。其可视化形式如下：</p>
-<img src="/images/20230423/202304230202.svg">
+<a href="/images/20230423/202304230202.webp" data-fancybox="gallery" data-download-src="/images/20230423/202304230202.webp" data-caption="正则表达式：[abc]">
+  <img src="/images/20230423/202304230202.webp" width="50%"/>
+</a>
 
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> regex = <span class="regexp">/a[123]bg/</span>;</span><br><span class="line"><span class="keyword">let</span> string = <span class="string">&quot;a0b a1b a2b a3b a4b&quot;</span>;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(string.<span class="title function_">match</span>(regex)); <span class="comment">// [&quot;a1b&quot;, &quot;a2b&quot;, &quot;a3b&quot;]</span></span><br></pre></td></tr></table></figure>
         </div>
