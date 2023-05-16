@@ -229,8 +229,8 @@
 <h2 id="范围表示法"><a href="#范围表示法" class="headerlink" title="范围表示法"></a>范围表示法</h2><p>如果字符组里的字符特别多，我们可以使用范围表示法。比如<code>[123456abcdefGHIJKLM]</code>，就可以写成<code>1-6a-fG-M</code>。用连字符<code>-</code>来省略和简写。</p>
 <p>因为连字符有特殊用途，若要匹配<code>&quot;a&quot;</code>、<code>&quot;-&quot;</code>、<code>&quot;z&quot;</code>这三者中的任意一个字符就可以写成：<code>[-az]</code>或<code>[az-]</code>亦或是<code>[a\-z]</code>。其实很简单，就是当我们匹配<code>-</code>时，要么将其放在开头或者结尾，要么就进行转义，否则引擎就会将其解析为范围表示法。</p>
 <h2 id="排除字符组"><a href="#排除字符组" class="headerlink" title="排除字符组"></a>排除字符组</h2><p>纵向模糊匹配，还有一种情形就是，某位字符可以是任何东西，但就是不能是<code>&quot;a&quot;</code>、<code>&quot;b&quot;</code>、<code>&quot;c&quot;</code>。此时就是排除字符组（反义字符组）的概念。例如<code>[^abc]</code>，表示的就是除了<code>&quot;a&quot;</code>、<code>&quot;b&quot;</code>、<code>&quot;c&quot;</code>之外的任意一个字符。字符组的第一位放<code>^</code><br>（脱字符），表示求反的概念。当然，也有相应的范围表示法。</p>
-<h2 id="常见的简介形式"><a href="#常见的简介形式" class="headerlink" title="常见的简介形式"></a>常见的简介形式</h2><p>有了字符串的概念后，一些常见的符号我们也就理解了。因为它们都是系统自带的简写形式。</p>
-<a href="/images/20230423/202304230401.webp" data-fancybox="gallery" data-download-src="/images/20230423/202304230401.webp" data-caption="常见的简介形式">
+<h2 id="常见的简写形式"><a href="#常见的简写形式" class="headerlink" title="常见的简写形式"></a>常见的简写形式</h2><p>有了字符串的概念后，一些常见的符号我们也就理解了。因为它们都是系统自带的简写形式。</p>
+<a href="/images/20230423/202304230401.webp" data-fancybox="gallery" data-download-src="/images/20230423/202304230401.webp" data-caption="常见的简写形式">
   <img src="/images/20230423/202304230401.webp" />
 </a>
 
