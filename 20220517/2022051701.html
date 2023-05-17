@@ -18,7 +18,7 @@
 
 
 
-<title>解决 MySQL 8.x 登录报错 | Matthew&#39;s Blog</title>
+<title>2022 年度高频面试题集锦 | Matthew&#39;s Blog</title>
 
 
 
@@ -200,7 +200,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">解决 MySQL 8.x 登录报错</h1>
+            <h1 class="post-title">2022 年度高频面试题集锦</h1>
             
                 <div class="post-meta">
                     
@@ -209,14 +209,14 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">十二月 17, 2020&nbsp;&nbsp;21:27:59</a>
+                        Date: <a href="#">五月 17, 2022&nbsp;&nbsp;20:48:38</a>
                         </span>
                     
                     
                         <span class="post-category">
                     Category:
                             
-                                <a href="/categories/MySQL/">MySQL</a>
+                                <a href="/categories/CSS/">CSS</a>
                             
                         </span>
                     
@@ -225,32 +225,13 @@
         </header>
 
         <div class="post-content">
-            <p>此方法可解决以下两种报错：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ERROR 1045 (28000): Access denied for user &#x27;root&#x27;@&#x27;localhost&#x27; (using password: YES)</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ERROR 1045 (28000): Access denied for user &#x27;root&#x27;@&#x27;localhost&#x27; (using password: NO)</span><br></pre></td></tr></table></figure>
-
-<h2 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h2><p>1、进入 MySQL 安装目录，修改 MySQL 配置文件，在<code>[mysqld]</code>下添加<code>skip-grant-tables</code>，保存即可；</p>
-<p>2、使用管理员身份打开命令行，输入如下命令，重启 MySQL；</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net stop mysql</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net start mysql</span><br></pre></td></tr></table></figure>
-
-<p>3、重启后，输入<code>mysql -u root -p</code>进行登录，在要求输入 MySQL 密码时，无需输入密码，直接按回车键；</p>
-<p>4、输入如下命令，修改 MySQL 密码；</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER USER &#x27;root&#x27;@&#x27;localhost&#x27; IDENTIFIED BY &#x27;new password&#x27; PASSWORD EXPIRE NEVER;</span><br></pre></td></tr></table></figure>
-
-<p>5、修改 MySQL 密码后，输入如下命令更新权限；</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
-
-<p>6、进入 MySQL 安装目录，修改 MySQL 配置文件，在<code>[mysqld]</code>下删除<code>skip-grant-tables</code>，并保存。</p>
-<p>7、使用管理员身份打开命令行，输入如下命令，重启 MySQL。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net stop mysql</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net start mysql</span><br></pre></td></tr></table></figure>
-
-<p>8、重新启动后，即可正常登录。</p>
-<p>注：此方法也可解决宝塔面板，数据库同步时的密码错误问题。</p>
+            <h2 id="理论篇"><a href="#理论篇" class="headerlink" title="理论篇"></a>理论篇</h2><h3 id="box-sizing-属性值有什么作用？"><a href="#box-sizing-属性值有什么作用？" class="headerlink" title="box-sizing 属性值有什么作用？"></a>box-sizing 属性值有什么作用？</h3><p><code>box-sizing</code>属性主要是用来控制元素的尺寸计算方式，主要影响元素的宽度和高度的计算。不同的值会影响盒模型中的<code>width</code>、<code>height</code>、<code>padding</code>以及<code>border</code>属性计算尺寸的方式，目前浏览器默认为<code>content-box</code>。</p>
+<ul>
+<li><code>context-box</code>：通常被称为标准盒模型，设置为该值后，元素的宽度和高度只包含内容的宽度和高度，不包括<code>padding</code>和<code>border</code>的值；</li>
+<li><code>border-box</code>：通常被称为怪异盒模型，设置为该值后，元素的宽度和高度包括<code>padding</code>和<code>border</code>的值，即<code>content</code> + <code>padding</code> + <code>border</code>。</li>
+</ul>
+<p>当我们将<code>box-sizing</code>属性设置为<code>border-box</code>时，设置元素的宽度和高度时，只需要考虑内容区的宽度和高度即可，而<code>padding</code>和<code>border</code>会自动计算。这样可以使得布局更为灵活和方便。</p>
+<h3 id="absolute-绝对定位，是相对于谁的定位？"><a href="#absolute-绝对定位，是相对于谁的定位？" class="headerlink" title="absolute 绝对定位，是相对于谁的定位？"></a>absolute 绝对定位，是相对于谁的定位？</h3><p>绝对定位（absolute positioning）是 CSS 中一种常用的定位方式，它可以让元素脱离文档流，在页面中自由定位。绝对定位是相对于最近的含有定位属性的祖先元素进行定位的。如果没有祖先元素有定位属性，则相对于页面的初始包含块进行定位。当元素的定位方式为绝对定位时，它会脱离文档流，不再占据布局空间，因此它的定位不会影响其他元素的位置。也正因为如此，相对定位元素之间可以互相遮盖而不产生影响。除此之外，绝对定位元素的位置也可能因为窗口尺寸的变化而改变，因此在进行设计时需要考虑到这一点。</p>
 
         </div>
 
@@ -269,9 +250,9 @@
                 <span class="tag">
                     
                     
-                        <a href="/tags/MySQL/"># MySQL</a>
+                        <a href="/tags/CSS/"># CSS</a>
                     
-                        <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"># 数据库</a>
+                        <a href="/tags/%E7%BB%8F%E5%85%B8%E9%9D%A2%E8%AF%95%E9%A2%98/"># 经典面试题</a>
                     
                         
                 </span>
@@ -284,8 +265,10 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/20220517/2022051701.html">2022 年度高频面试题集锦</a>
+                <a class="prev" rel="prev" href="/20230403/2023040301.html">JavaScript 中 undefined 和 null 两种类型的区别</a>
             
+            
+            <a class="next" rel="next" href="/20201217/2020121701.html">解决 MySQL 8.x 登录报错</a>
             
         </section>
 
